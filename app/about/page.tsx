@@ -35,14 +35,23 @@ const About: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
-      const result: User[] = await response.json();
-      setUsers(result);
+    // Check if data is in localStorage
+    const cachedData = localStorage.getItem('users');
+    if (cachedData) {
+      setUsers(JSON.parse(cachedData));
       setLoading(false);
-    };
-
+    } else{
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        const result: User[] = await response.json();
+        setUsers(result);
+        setLoading(false);
+        // Cache the data in localStorage
+        localStorage.setItem('users', JSON.stringify(result));
+      }
+      };
     fetchData();
   }, []);
+
 
   return (
     <div className={styles.container}>
